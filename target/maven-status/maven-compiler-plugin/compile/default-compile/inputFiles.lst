@@ -1,0 +1,6 @@
+/home/andrea/dev/mongodb-exercise/src/main/java/it/andrea/mongodb/model/Student.java
+/home/andrea/dev/mongodb-exercise/src/main/java/it/andrea/mongodb/repository/StudentRepository.java
+/home/andrea/dev/mongodb-exercise/src/main/java/it/andrea/mongodb/model/Education.java
+/home/andrea/dev/mongodb-exercise/src/main/java/it/andrea/mongodb/model/Address.java
+/home/andrea/dev/mongodb-exercise/src/main/java/it/andrea/mongodb/MongodbExerciseApplication.java
+/home/andrea/dev/mongodb-exercise/src/main/java/it/andrea/mongodb/controllers/StudentsController.java

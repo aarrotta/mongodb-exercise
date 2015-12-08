@@ -1,0 +1,6 @@
+it/andrea/mongodb/model/Education.class
+it/andrea/mongodb/model/Address.class
+it/andrea/mongodb/model/Student.class
+it/andrea/mongodb/controllers/StudentsController.class
+it/andrea/mongodb/MongodbExerciseApplication.class
+it/andrea/mongodb/repository/StudentRepository.class
