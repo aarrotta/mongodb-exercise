@@ -1,6 +1,8 @@
 # mongodb-exercise
 Spring Rest webservice to access MongoDB
 
+<h5>MongoDB</h5>
+If you don't have an instance of MongoDB server running on your machine then use the following guide to install and run it: https://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu
 <h5>Compile</h5>
 ```
 maven clean package
