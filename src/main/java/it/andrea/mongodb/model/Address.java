@@ -10,19 +10,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Address
 {
 
-	@Id
-	private String uid;
-
 	private String street;
 	private String number;
 	private String country;
 
 	public Address(final String uid, final String street, final String number, final String country)
 	{
-		this.uid = uid;
 		this.street = street;
 		this.number = number;
 		this.country = country;
+	}
+
+	public Address()
+	{
 	}
 
 	public String getStreet()
@@ -53,16 +53,6 @@ public class Address
 	public void setCountry(final String country)
 	{
 		this.country = country;
-	}
-
-	public String getUid()
-	{
-		return uid;
-	}
-
-	public void setUid(final String uid)
-	{
-		this.uid = uid;
 	}
 
 }

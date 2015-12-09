@@ -36,7 +36,7 @@ public class StudentsController
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public Collection<Student> create(@RequestParam(value = "name") final String name)
+	public Collection<Student> getStudents(@RequestParam(value = "name") final String name)
 	{
 		return repo.findByName(name);
 	}

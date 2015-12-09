@@ -17,7 +17,10 @@ public class Student
 	private String name;
 	private Collection<Address> addresses;
 	private Map<String, Education> education;
-	private Education phd;
+
+	public Student()
+	{
+	}
 
 	public Student(final String uid, final String name, final Collection<Address> addresses, final Map<String, Education> education, final Education phd)
 	{
@@ -25,7 +28,6 @@ public class Student
 		this.name = name;
 		this.addresses = addresses;
 		this.education = education;
-		this.phd = phd;
 	}
 
 	public String getName()
@@ -56,16 +58,6 @@ public class Student
 	public void setEducation(final Map<String, Education> education)
 	{
 		this.education = education;
-	}
-
-	public Education getPhd()
-	{
-		return phd;
-	}
-
-	public void setPhd(final Education phd)
-	{
-		this.phd = phd;
 	}
 
 	public String getUid()

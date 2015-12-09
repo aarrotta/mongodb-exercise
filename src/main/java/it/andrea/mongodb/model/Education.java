@@ -10,26 +10,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Education
 {
 
-	@Id
-	private String uid;
 	private String university;
 	private String year;
 
 	public Education(final String uid, final String university, final String year)
 	{
-		this.uid = uid;
 		this.university = university;
 		this.year = year;
 	}
 
-	public String getUid()
+	public Education()
 	{
-		return uid;
-	}
-
-	public void setUid(final String uid)
-	{
-		this.uid = uid;
 	}
 
 	public String getUniversity()
