@@ -10,4 +10,5 @@ maven clean package
 java -jar <project-root>/target/mongodb-exercise-0.0.1-SNAPSHOT.jar
 ```
 <h5>Test</h5>
-To check if the server is running hit the following url: http://localhost:8080/ex1/alumni?name=Andrea
+To check if the server is running hit the following url: 
+<a href="http://localhost:8080/ex1/alumni?name=Andrea">localhost:8080/ex1/alumni?name=Andrea</a>
