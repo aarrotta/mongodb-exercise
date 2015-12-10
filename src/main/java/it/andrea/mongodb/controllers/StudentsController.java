@@ -2,6 +2,7 @@ package it.andrea.mongodb.controllers;
 
 import java.lang.String;
 import java.util.Collection;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.andrea.mongodb.dtos.StudentsResult;
 import it.andrea.mongodb.model.Student;
 import it.andrea.mongodb.repository.StudentRepository;
 
@@ -36,9 +38,14 @@ public class StudentsController
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public Collection<Student> getStudents(@RequestParam(value = "name") final String name)
+	public Object getStudents(@RequestParam(value = "name") final String name)
 	{
-		return repo.findByName(name);
+		final Collection<Student> students = repo.findByName(name);
+		if (CollectionUtils.isEmpty(students))
+		{
+			return HttpStatus.NO_CONTENT;
+		}
+		return new StudentsResult(students.size(), students);
 	}
 
 }
