@@ -16,20 +16,22 @@ public interface StudentService
 	void save(final Student student);
 
 	/**
-	 * Returns all the existing students with a given name
+	 * Returns all the existing students with the given information
 	 *
-	 * @param name the name
+	 * @param name           the name
+	 * @param educationLevel the education level
 	 * @return an instance of {@link it.andrea.mongodb.dtos.StudentsResult} containing the result
 	 */
-	StudentsResult get(final String name);
+	StudentsResult get(final String name, final String educationLevel);
 
 	/**
-	 * Returns the existing students with a given name using the pagination
+	 * Returns the existing students with the given information using the pagination
 	 *
-	 * @param name       the name
-	 * @param pageNumber the page number
-	 * @param pageSize   the page size
+	 * @param name           the name
+	 * @param educationLevel the education level
+	 * @param pageNumber     the page number
+	 * @param pageSize       the page size
 	 * @return an instance of {@link it.andrea.mongodb.dtos.StudentsResult} containing the result
 	 */
-	StudentsResult get(final String name, final int pageNumber, final int pageSize);
+	StudentsResult get(final String name, final String educationLevel, final int pageNumber, final int pageSize);
 }

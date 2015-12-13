@@ -1,7 +1,7 @@
 package it.andrea.mongodb.services.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
@@ -14,10 +14,14 @@ import it.andrea.mongodb.model.Student;
 import it.andrea.mongodb.repository.StudentRepository;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -28,6 +32,7 @@ public class DefaultStudentServiceTest
 	private static final int PAGE_NUMBER = 5;
 	private static final int PAGE_SIZE = 10;
 	private static final int FIRST_PAGE = 1;
+	private static final String EDUCATION_LEVEL_MASTER = "master";
 
 	@InjectMocks
 	private DefaultStudentService service = new DefaultStudentService();
@@ -64,12 +69,15 @@ public class DefaultStudentServiceTest
 	public void testGetExistingStudents() throws Exception
 	{
 		// GIVEN
-		given(repo.findByName(STUDENT_NAME)).willReturn(Arrays.asList(student1, student2));
+		given(mt.find(any(Query.class), eq(Student.class))).willReturn(Arrays.asList(student1, student2));
 
 		// WHEN
-		final StudentsResult studentsResult = service.get(STUDENT_NAME);
+		final StudentsResult studentsResult = service.get(STUDENT_NAME, null);
 
 		// THEN
+		ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+		verify(mt).find(queryCaptor.capture(), eq(Student.class));
+		assertThat(queryCaptor.getValue().getQueryObject().get("name"), equalTo(STUDENT_NAME));
 		assertThat(studentsResult.getTotalCount(), equalTo(2));
 		assertThat(studentsResult.getData(), hasItems(student1, student2));
 	}
@@ -77,15 +85,16 @@ public class DefaultStudentServiceTest
 	@Test
 	public void testGetWhenNoStudentsAreAvailable() throws Exception
 	{
-		// GIVEN
-		given(repo.findByName(STUDENT_NAME)).willReturn(Collections.EMPTY_LIST);
+		given(mt.find(any(Query.class), eq(Student.class))).willReturn(new ArrayList<Student>());
 
 		// WHEN
-		final StudentsResult studentsResult = service.get(STUDENT_NAME);
+		final StudentsResult studentsResult = service.get(STUDENT_NAME, null);
 
 		// THEN
+		ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+		verify(mt).find(queryCaptor.capture(), eq(Student.class));
+		assertThat(queryCaptor.getValue().getQueryObject().get("name"), equalTo(STUDENT_NAME));
 		assertThat(studentsResult.getTotalCount(), equalTo(0));
-		assertThat(studentsResult.getData().size(), equalTo(0));
 	}
 
 	@Test
@@ -95,11 +104,12 @@ public class DefaultStudentServiceTest
 		given(mt.find(any(Query.class), eq(Student.class))).willReturn(Arrays.asList(student1, student2));
 
 		// WHEN
-		final StudentsResult studentsResult = service.get(STUDENT_NAME, PAGE_NUMBER, PAGE_SIZE);
+		final StudentsResult studentsResult = service.get(STUDENT_NAME, null, PAGE_NUMBER, PAGE_SIZE);
 
 		// THEN
 		ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
 		verify(mt).find(queryCaptor.capture(), eq(Student.class));
+		assertThat(queryCaptor.getValue().getQueryObject().get("name"), equalTo(STUDENT_NAME));
 		assertThat(queryCaptor.getValue().getSkip(), equalTo(40));
 		assertThat(queryCaptor.getValue().getLimit(), equalTo(10));
 		assertThat(studentsResult.getTotalCount(), equalTo(2));
@@ -113,7 +123,7 @@ public class DefaultStudentServiceTest
 		given(mt.find(any(Query.class), eq(Student.class))).willReturn(Arrays.asList(student1, student2));
 
 		// WHEN
-		final StudentsResult studentsResult = service.get(STUDENT_NAME, FIRST_PAGE, PAGE_SIZE);
+		final StudentsResult studentsResult = service.get(STUDENT_NAME, null, FIRST_PAGE, PAGE_SIZE);
 
 		// THEN
 		ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);

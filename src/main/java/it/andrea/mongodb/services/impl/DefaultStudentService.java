@@ -1,11 +1,11 @@
 package it.andrea.mongodb.services.impl;
 
-import java.util.Collection;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -33,21 +33,51 @@ public class DefaultStudentService implements StudentService
 	}
 
 	@Override
-	public StudentsResult get(final String name)
+	public StudentsResult get(final String name, final String educationLevel)
 	{
-		final Collection<Student> students = repo.findByName(name);
-		return new StudentsResult(CollectionUtils.isNotEmpty(students) ? students.size() : 0, students);
+		final Query query = new Query();
+		query.addCriteria(buildCriteriaDefinition(name, educationLevel));
+		return getResult(query);
 	}
 
 	@Override
-	public StudentsResult get(final String name, final int pageNumber, final int pageSize)
+	public StudentsResult get(final String name, final String educationLevel, final int pageNumber, final int pageSize)
 	{
 		final Query query = new Query();
-		query.addCriteria(Criteria.where("name").is(name));
+		final CriteriaDefinition criteriaDefinition = buildCriteriaDefinition(name, educationLevel);
+		query.addCriteria(criteriaDefinition);
 		query.skip(pageNumber * pageSize - pageSize);
 		query.limit(pageSize);
+		return getResult(query);
+	}
+
+	private StudentsResult getResult(final Query query)
+	{
 		final List<Student> students = mt.find(query, Student.class);
 		return new StudentsResult(CollectionUtils.isNotEmpty(students) ? students.size() : 0, students);
+	}
+
+	private CriteriaDefinition buildCriteriaDefinition(final String name, final String educationLevel)
+	{
+		Criteria criteria = null;
+		boolean whereClauseCreated = false;
+		if (name != null)
+		{
+			criteria = Criteria.where("name").is(name);
+			whereClauseCreated = true;
+		}
+		if (educationLevel != null)
+		{
+			if (whereClauseCreated)
+			{
+				criteria.and("education." + educationLevel).ne(null);
+			}
+			else
+			{
+				criteria = Criteria.where("education." + educationLevel).ne(null);
+			}
+		}
+		return criteria;
 	}
 
 }

@@ -25,6 +25,7 @@ public class StudentsControllerTest
 	private static final String STUDENT_NAME = "name";
 	private static final int PAGE_NUMBER = 2;
 	private static final int PAGE_SIZE = 3;
+	private static final String EDUCATION_LEVEL = "educationLevel";
 
 	@InjectMocks
 	private StudentsController controller = new StudentsController();
@@ -56,12 +57,27 @@ public class StudentsControllerTest
 	public void testShouldGetStudents() throws Exception
 	{
 		// GIVEN
-		given(studentService.get(STUDENT_NAME)).willReturn(studentsResult);
+		given(studentService.get(STUDENT_NAME, null)).willReturn(studentsResult);
 		given(studentsResult.getTotalCount()).willReturn(1);
 		given(studentsResult.getData()).willReturn(Arrays.asList(student));
 
 		// WHEN
-		final Object students = controller.getStudents(STUDENT_NAME, null, null);
+		final Object students = controller.getStudents(STUDENT_NAME, null, null, null);
+
+		// THEN
+		assertThat(students, equalTo(studentsResult));
+	}
+
+	@Test
+	public void testShouldGetStudentsForEducationLevel() throws Exception
+	{
+		// GIVEN
+		given(studentService.get(null, EDUCATION_LEVEL)).willReturn(studentsResult);
+		given(studentsResult.getTotalCount()).willReturn(1);
+		given(studentsResult.getData()).willReturn(Arrays.asList(student));
+
+		// WHEN
+		final Object students = controller.getStudents(null, EDUCATION_LEVEL, null, null);
 
 		// THEN
 		assertThat(students, equalTo(studentsResult));
@@ -71,12 +87,12 @@ public class StudentsControllerTest
 	public void testShouldReturnAnErrorForNoResults() throws Exception
 	{
 		// GIVEN
-		given(studentService.get(STUDENT_NAME)).willReturn(studentsResult);
+		given(studentService.get(STUDENT_NAME, null)).willReturn(studentsResult);
 		given(studentsResult.getTotalCount()).willReturn(0);
 		given(studentsResult.getData()).willReturn(Collections.EMPTY_LIST);
 
 		// WHEN
-		final Object students = controller.getStudents(STUDENT_NAME, null, null);
+		final Object students = controller.getStudents(STUDENT_NAME, null, null, null);
 
 		// THEN
 		assertThat(students, equalTo(HttpStatus.NO_CONTENT));
@@ -86,12 +102,12 @@ public class StudentsControllerTest
 	public void testShouldGetStudentsWithThePagination() throws Exception
 	{
 		// GIVEN
-		given(studentService.get(STUDENT_NAME, PAGE_NUMBER, PAGE_SIZE)).willReturn(studentsResult);
+		given(studentService.get(STUDENT_NAME, null, PAGE_NUMBER, PAGE_SIZE)).willReturn(studentsResult);
 		given(studentsResult.getTotalCount()).willReturn(1);
 		given(studentsResult.getData()).willReturn(Arrays.asList(student));
 
 		// WHEN
-		final Object students = controller.getStudents(STUDENT_NAME, PAGE_NUMBER, PAGE_SIZE);
+		final Object students = controller.getStudents(STUDENT_NAME, null, PAGE_NUMBER, PAGE_SIZE);
 
 		// THEN
 		assertThat(students, equalTo(studentsResult));
@@ -101,12 +117,12 @@ public class StudentsControllerTest
 	public void testShouldReturnAnErrorForNoResultsWithThePagination() throws Exception
 	{
 		// GIVEN
-		given(studentService.get(STUDENT_NAME, PAGE_NUMBER, PAGE_SIZE)).willReturn(studentsResult);
+		given(studentService.get(STUDENT_NAME, null, PAGE_NUMBER, PAGE_SIZE)).willReturn(studentsResult);
 		given(studentsResult.getTotalCount()).willReturn(0);
 		given(studentsResult.getData()).willReturn(Collections.EMPTY_LIST);
 
 		// WHEN
-		final Object students = controller.getStudents(STUDENT_NAME, PAGE_NUMBER, PAGE_SIZE);
+		final Object students = controller.getStudents(STUDENT_NAME, null, PAGE_NUMBER, PAGE_SIZE);
 
 		// THEN
 		assertThat(students, equalTo(HttpStatus.NO_CONTENT));

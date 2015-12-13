@@ -42,18 +42,19 @@ public class StudentsController
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public Object getStudents(@RequestParam(value = "name") final String name,
+	public Object getStudents(@RequestParam(value = "name", required = false) final String name,
+	                          @RequestParam(value = "educationLevel", required = false) final String educationLevel,
 	                          @RequestParam(value = "page", required = false) final Integer pageNumber,
 	                          @RequestParam(value = "size", required = false) final Integer pageSize)
 	{
 		StudentsResult studentsResult = null;
 		if (pageNumber != null && pageSize != null)
 		{
-			studentsResult = studentService.get(name, pageNumber, pageSize);
+			studentsResult = studentService.get(name, educationLevel, pageNumber, pageSize);
 		}
 		else
 		{
-			studentsResult = studentService.get(name);
+			studentsResult = studentService.get(name, educationLevel);
 		}
 		if (studentsResult.getTotalCount() == 0)
 		{
