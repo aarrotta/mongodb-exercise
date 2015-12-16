@@ -14,11 +14,16 @@ import it.andrea.mongodb.model.Student;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class StudentValidatorTest
 {
 
+	private static final String VALID_NAME = "Andrea";
+	private static final String INVALID_NAME = "Andrea11&%dsf";
 	@InjectMocks
 	private final StudentValidator validator = new StudentValidator();
 
@@ -51,6 +56,32 @@ public class StudentValidatorTest
 		// THEN
 		verify(addressValidator).validate(address1, errors);
 		verify(addressValidator).validate(address2, errors);
+	}
+
+	@Test
+	public void testNameValidIfContainsLetters()
+	{
+		// GIVEN
+		given(student.getName()).willReturn(VALID_NAME);
+
+		// WHEN
+		validator.validate(student, errors);
+
+		// THEN
+		verify(errors, never()).rejectValue(eq("name"), anyString());
+	}
+
+	@Test
+	public void testNameInvalidIfContainsWrongCharacters()
+	{
+		// GIVEN
+		given(student.getName()).willReturn(INVALID_NAME);
+
+		// WHEN
+		validator.validate(student, errors);
+
+		// THEN
+		verify(errors).rejectValue(eq("name"), anyString());
 	}
 
 }

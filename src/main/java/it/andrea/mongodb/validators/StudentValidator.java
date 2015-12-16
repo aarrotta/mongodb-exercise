@@ -1,6 +1,7 @@
 package it.andrea.mongodb.validators;
 
 import javax.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -28,6 +29,10 @@ public class StudentValidator implements Validator
 	public void validate(final Object o, final Errors errors)
 	{
 		final Student student = (Student) o;
+		if(!StringUtils.isAlpha(student.getName()))
+		{
+			errors.rejectValue("name", "Attribute 'name' of the student can only contain letters");
+		}
 		for(Address address : student.getAddresses())
 		{
 			getAddressValidator().validate(address, errors);

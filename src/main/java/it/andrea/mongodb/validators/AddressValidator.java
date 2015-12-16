@@ -30,11 +30,15 @@ public class AddressValidator implements Validator
 		}
 		if (StringUtils.isBlank(address.getNumber()))
 		{
-			errors.rejectValue("number", "Attribute 'country' of the address cannot be empty.");
+			errors.rejectValue("number", "Attribute 'number' of the address cannot be empty.");
+		}
+		else if (!StringUtils.isNumeric(address.getNumber()))
+		{
+			errors.rejectValue("number", "Attribute 'number' can only contain numbers.");
 		}
 		if (StringUtils.isBlank(address.getStreet()))
 		{
-			errors.rejectValue("street", "Attribute 'country' of the address cannot be empty.");
+			errors.rejectValue("street", "Attribute 'street' of the address cannot be empty.");
 		}
 	}
 }
