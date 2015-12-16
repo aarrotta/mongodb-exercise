@@ -2,11 +2,13 @@ package it.andrea.mongodb.controllers;
 
 import javax.annotation.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import it.andrea.mongodb.dtos.StudentsResult;
 import it.andrea.mongodb.model.Student;
 import it.andrea.mongodb.services.StudentService;
+import it.andrea.mongodb.validators.StudentValidator;
 
 /**
  * Created by andrea on 12/8/15.
@@ -18,6 +20,8 @@ public class StudentsController
 
 	@Resource
 	private StudentService studentService;
+	@Resource
+	private StudentValidator studentValidator;
 
 	/**
 	 * This method creates a student with the given information
@@ -25,10 +29,16 @@ public class StudentsController
 	 * @param student an instance of {@link it.andrea.mongodb.model.Student} containing all the information
 	 */
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void create(@RequestBody Student student)
+	@ResponseStatus
+	public Object create(final @RequestBody Student student, final BindingResult bindingResult)
 	{
+		studentValidator.validate(student, bindingResult);
+		if(bindingResult.hasErrors())
+		{
+			return bindingResult.getModel();
+		}
 		studentService.save(student);
+		return HttpStatus.CREATED;
 	}
 
 	/**

@@ -9,15 +9,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 
 import it.andrea.mongodb.dtos.StudentsResult;
 import it.andrea.mongodb.model.Student;
 import it.andrea.mongodb.services.StudentService;
+import it.andrea.mongodb.validators.StudentValidator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class StudentsControllerTest
 {
@@ -33,9 +38,13 @@ public class StudentsControllerTest
 	@Mock
 	private StudentService studentService;
 	@Mock
+	private StudentValidator studentValidator;
+	@Mock
 	private Student student;
 	@Mock
 	private StudentsResult studentsResult;
+	@Mock
+	private BindingResult bindingResult;
 
 	@Before
 	public void setUp() throws Exception
@@ -46,11 +55,31 @@ public class StudentsControllerTest
 	@Test
 	public void testShouldCreateTheStudent() throws Exception
 	{
+		// GIVEN
+		given(bindingResult.hasErrors()).willReturn(Boolean.FALSE);
+
 		// WHEN
-		controller.create(student);
+		final Object result = controller.create(student, bindingResult);
 
 		// THEN
+		verify(studentValidator).validate(student, bindingResult);
 		Mockito.verify(studentService).save(student);
+		assertThat(result, equalTo(HttpStatus.CREATED));
+	}
+
+	@Test
+	public void testShouldNoCreateTheStudentInCaseOfErrors() throws Exception
+	{
+		// GIVEN
+		given(bindingResult.hasErrors()).willReturn(Boolean.TRUE);
+
+		// WHEN
+		final Object result = controller.create(student, bindingResult);
+
+		// THEN
+		verify(studentValidator).validate(student, bindingResult);
+		Mockito.verify(studentService, never()).save(student);
+		assertThat(result, not(equalTo(HttpStatus.CREATED)));
 	}
 
 	@Test
